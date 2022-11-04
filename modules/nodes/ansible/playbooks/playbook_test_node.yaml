@@ -22,6 +22,10 @@
       - zlib1g-dev
       - libssl-dev
       - nginx
+      - default-jre
+      - openjdk-11-jre-headless
+      - openjdk-8-jre-headless
+      - unzip
 
   handlers:
     - name: restart_nginx
@@ -98,6 +102,14 @@
         chdir: /home/redis/memtier_benchmark
         target: install
       become: yes
+
+# download RIOT (update the zip to ask user to look for most recent)
+    - name: Download riot redis zip
+      command: wget https://github.com/redis-developer/riot/releases/download/v2.18.5/riot-redis-2.18.5.zip
+    - name: Unzip riot redis
+      command: sudo unzip riot-redis-2.18.5.zip
+
+
 
   post_tasks:
     - name: create the redis dir
