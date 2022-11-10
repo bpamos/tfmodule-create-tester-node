@@ -268,3 +268,9 @@ variable "external-rules" {
     }
   ]
 }
+
+
+variable "riot_version" {
+  description = "RIOT Version"
+  default     = ""
+}

@@ -38,12 +38,11 @@ output "vpc_name" {
   value = module.vpc.vpc-name
 }
 
-########### Node Module
-#### Create RE and Test nodes
-#### Ansible playbooks configure and install RE software on nodes
+########### Test Node Module
+#### Create Test nodes
 #### Ansible playbooks configure Test node with Redis and Memtier
-module "nodes" {
-    source             = "./modules/nodes"
+module "tester-nodes" {
+    source             = "./modules/tester-nodes"
     owner              = var.owner
     region             = var.region
     vpc_cidr           = var.vpc_cidr
@@ -63,6 +62,22 @@ module "nodes" {
     vpc_subnets_ids    = module.vpc.subnet-ids
     vpc_id             = module.vpc.vpc-id
 }
+
+
+module "tester-nodes-riot" {
+    source             = "./modules/tester-nodes-riot"
+    ssh_key_path       = var.ssh_key_path
+    test-node-count    = var.test-node-count
+    riot_version       = var.riot_version
+    vpc_name           = module.vpc.vpc-name
+
+
+    depends_on = [
+      module.tester-nodes
+    ]
+}
+
+
 
 # #### Node Outputs to use in future modules
 # output "re-data-node-eips" {
