@@ -1,42 +1,9 @@
 ########## Create an RE cluster on AWS from scratch #####
 #### Modules to create the following:
-#### Brand new VPC 
-#### RE nodes and install RE software (ubuntu)
 #### Test node with Redis and Memtier
-#### DNS (NS and A records for RE nodes)
-#### Create and Join RE cluster 
+#### Test node with RIOT
+#### Test node with Prometheus and Grafana for advanced monitoring on cluster
 
-
-########### VPC Module
-#### create a brand new VPC, use its outputs in future modules
-#### If you already have an existing VPC, comment out and
-#### enter your VPC params in the future modules
-module "vpc" {
-    source             = "./modules/vpc"
-    aws_creds          = var.aws_creds
-    owner              = var.owner
-    region             = var.region
-    base_name          = var.base_name
-    vpc_cidr           = var.vpc_cidr
-    subnet_cidr_blocks = var.subnet_cidr_blocks
-    subnet_azs         = var.subnet_azs
-}
-
-### VPC outputs 
-### Outputs from VPC outputs.tf, 
-### must output here to use in future modules)
-output "subnet-ids" {
-  value = module.vpc.subnet-ids
-}
-
-output "vpc-id" {
-  value = module.vpc.vpc-id
-}
-
-output "vpc_name" {
-  description = "get the VPC Name tag"
-  value = module.vpc.vpc-name
-}
 
 ########### Test Node Module
 #### Create Test nodes
@@ -45,22 +12,20 @@ module "tester-nodes" {
     source             = "./modules/tester-nodes"
     owner              = var.owner
     region             = var.region
-    vpc_cidr           = var.vpc_cidr
     subnet_azs         = var.subnet_azs
     ssh_key_name       = var.ssh_key_name
     ssh_key_path       = var.ssh_key_path
     test_instance_type = var.test_instance_type
     test-node-count    = var.test-node-count
-    allow-public-ssh   = var.allow-public-ssh
-    open-nets          = var.open-nets
     ### vars pulled from previous modules
-    ## from vpc module outputs 
-    ##(these do not need to be varibles in the variables.tf outside the modules folders
-    ## since they are refrenced from the other module, but they need to be variables 
-    ## in the variables.tf inside the nodes module folder )
-    vpc_name           = module.vpc.vpc-name
-    vpc_subnets_ids    = module.vpc.subnet-ids
-    vpc_id             = module.vpc.vpc-id
+    vpc_name           = var.vpc_name
+    vpc_subnets_ids    = var.vpc_subnets_ids
+    vpc_security_group_ids = var.vpc_security_group_ids
+
+}
+
+output "test-node-eips" {
+  value = module.tester-nodes.test-node-eips
 }
 
 module "tester-nodes-riot" {
@@ -68,7 +33,7 @@ module "tester-nodes-riot" {
     ssh_key_path       = var.ssh_key_path
     test-node-count    = var.test-node-count
     riot_version       = var.riot_version
-    vpc_name           = module.vpc.vpc-name
+    vpc_name           = var.vpc_name
 
 
     depends_on = [
@@ -76,31 +41,28 @@ module "tester-nodes-riot" {
     ]
 }
 
-
+########## Prometheus and Grafana Module
+##### install prometheus on new node
 module "tester-nodes-prometheus" {
     source             = "./modules/tester-nodes-prometheus"
     ssh_key_path       = var.ssh_key_path
-    test-node-count    = var.test-node-count
-    vpc_name           = module.vpc.vpc-name
-    dns_fqdn           = "brandons-cluster.com"
+    vpc_name           = var.vpc_name
+    dns_fqdn           = var.dns_fqdn
+    test-node-eips     = module.tester-nodes.test-node-eips
 
 
-    depends_on = [
-      module.tester-nodes, module.tester-nodes-riot
-    ]
+    depends_on = [module.tester-nodes, module.tester-nodes-riot]
 }
 
+#### dns FQDN output used in future modules
+output "grafana_url" {
+  value = module.tester-nodes-prometheus.grafana_url
+}
 
+output "grafana_username" {
+  value = "admin"
+}
 
-# #### Node Outputs to use in future modules
-# output "re-data-node-eips" {
-#   value = module.nodes.re-data-node-eips
-# }
-
-# output "re-data-node-internal-ips" {
-#   value = module.nodes.re-data-node-internal-ips
-# }
-
-# output "re-data-node-eip-public-dns" {
-#   value = module.nodes.re-data-node-eip-public-dns
-# }
+output "grafana_password" {
+  value = "secret"
+}
