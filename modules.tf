@@ -63,7 +63,6 @@ module "tester-nodes" {
     vpc_id             = module.vpc.vpc-id
 }
 
-
 module "tester-nodes-riot" {
     source             = "./modules/tester-nodes-riot"
     ssh_key_path       = var.ssh_key_path
@@ -74,6 +73,20 @@ module "tester-nodes-riot" {
 
     depends_on = [
       module.tester-nodes
+    ]
+}
+
+
+module "tester-nodes-prometheus" {
+    source             = "./modules/tester-nodes-prometheus"
+    ssh_key_path       = var.ssh_key_path
+    test-node-count    = var.test-node-count
+    vpc_name           = module.vpc.vpc-name
+    dns_fqdn           = "brandons-cluster.com"
+
+
+    depends_on = [
+      module.tester-nodes, module.tester-nodes-riot
     ]
 }
 

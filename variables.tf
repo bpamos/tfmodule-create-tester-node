@@ -274,3 +274,8 @@ variable "riot_version" {
   description = "RIOT Version"
   default     = ""
 }
+
+variable "dns_fqdn" {
+  description = "dns_fqdn"
+  default     = ""
+}
