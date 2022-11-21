@@ -102,7 +102,7 @@ There are two important files to understand. `modules.tf` and `terraform.tfvars.
     ```
 
  - example output:
- ```
+ 
  Outputs:
 
 If you run prometheus and grafana module you will find a `grafana_url` if you provisioned the prometheus node.
