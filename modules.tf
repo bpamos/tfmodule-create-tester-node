@@ -1,8 +1,9 @@
-########## Create an RE cluster on AWS from scratch #####
+########## Create a Tester node for your Redis Enterprise Cluster #####
 #### Modules to create the following:
-#### Test node with Redis and Memtier
-#### Test node with RIOT
+#### Test node with Redis and Memtier installed
+#### Test node with RIOT installed
 #### Test node with Prometheus and Grafana for advanced monitoring on cluster
+#### (Prometheus and Grafana require the cluster FQDN as an input)
 
 
 ########### Test Node Module
@@ -28,6 +29,8 @@ output "test-node-eips" {
   value = module.tester-nodes.test-node-eips
 }
 
+########## RIOT Module
+##### install RIOT and required Java packages on node
 module "tester-nodes-riot" {
     source             = "./modules/tester-nodes-riot"
     ssh_key_path       = var.ssh_key_path
@@ -42,7 +45,9 @@ module "tester-nodes-riot" {
 }
 
 ########## Prometheus and Grafana Module
-##### install prometheus on new node
+##### install prometheus on new node 
+##### (cavet, Prometheus and Grafana will only work on 1 node, 
+##### if you create more the extra nodes will not have functional Prometheus and Grafana configurations)
 module "tester-nodes-prometheus" {
     source             = "./modules/tester-nodes-prometheus"
     ssh_key_path       = var.ssh_key_path
@@ -50,7 +55,7 @@ module "tester-nodes-prometheus" {
     dns_fqdn           = var.dns_fqdn
     test-node-eips     = module.tester-nodes.test-node-eips
 
-
+    #currently breaks sometimes if you try riot & prometheus without the depends on riot here.
     depends_on = [module.tester-nodes, module.tester-nodes-riot]
 }
 

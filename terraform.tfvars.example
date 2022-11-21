@@ -5,49 +5,51 @@
 #### User Input Required
 #### Access key and Secret key for aws account [AWS_ACCESS_KEY, AWS_SECRET_KEY]
 #### (fake example: aws_creds = ["myAccesssKeyxjdklfdakf","MySecretKeyxkldkfhadjkfh"]) 
-aws_creds =
+aws_creds = 
 
 #### User Input Required
 #### name of ssh key (.pem file) to be added to instance (AWS key pair name)
 #### ie. if your AWS ssh keys name is "my-ssh-key.pem", enter in "my-ssh-key"
 #### the SSH key must have already had "chmod 400 my-ssh-key.pem" run on it before using
 #### (fake example: ssh_key_name = "my-ssh-key")
-ssh_key_name =
+ssh_key_name = 
 
 #### User Input Required
 #### path to your the SSH key .pem file.
 #### (fake example: ssh_key_path = "~/keys/my-ssh-key.pem")
-ssh_key_path =
-
-#### User Input Required
-#### DNS hosted zone id (find value in R53 hosted zones)
-### navigate to Route 53 in the AWS console, click hosted zones, 
-### find hosted zone "domain name" of interest, use its "hosted zone ID" (fake example: dns_hosted_zone_id="Z903232kljadfdk")
-dns_hosted_zone_id =
+ssh_key_path = 
 
 #### Owner tag name of resources
-owner = "redisuser"
+owner = 
 
-#### AWS Region
+# AWS Region
 region = "us-west-2"
-
-#### Base Name of Resources 
-#### (Resource prefix for all generated resources)
-#### default = "redisuser1-tf"
-base_name = "redis-tf"
 
 ################### VPC Variables
 
-#### example: vpc_cidr = ""10.0.0.0/16""
-vpc_cidr = "10.0.0.0/16"
 
-#### Subnet CIDR Block 
-#### example: subnet_cidr_blocks = ["10.0.0.0/24","10.0.16.0/24","10.0.32.0/24"]
-subnet_cidr_blocks = ["10.0.0.0/24","10.0.16.0/24","10.0.32.0/24"]
+#### vpc name (will be the prefix of your nodes)
+#### example: vpc_name = "redis-tf-us-west-2-cluster"
+vpc_name = 
 
 #### Subnet AZ 
+#### get the subnet azs from your VPC that you would like the test nodes placed in
+#### (Must be list form)
 #### example: subnet_azs = ["us-west-2a","us-west-2b","us-west-2c"]
-subnet_azs = ["us-west-2a","us-west-2b","us-west-2c"]
+subnet_azs = 
+
+#### vpc_subnets_ids
+#### Get the subnet Ids from your VPC that you would like to place the Test node into
+#### (Must be list form)
+#### example: vpc_subnets_ids = ["subnet-9cb8ac1fa9a372bf0", "subnet-9cf634fa5bf40eeb2","subnet-925b76899dc7a792c"]
+vpc_subnets_ids =  
+
+#### Security Group Id
+#### Get the security group of your redis cluster in the VPC where you want to deploy your test node
+#### (Must be list form)
+#### example: vpc_security_group_ids = ["sg-96a2ebde00e66dabd"]
+vpc_security_group_ids = 
+
 
 ############### Test Instance Variables
 
@@ -59,42 +61,12 @@ test_instance_type = "t3.micro"
 #### example: test-node-count = 1
 test-node-count = 1
 
-############## Redis Enterprise Nodes Variables
-
-#### User Input Required
-#### RE Software download url (MUST BE ubuntu 18.04)
-#### (FAKE example (update the x.x.xx with the Redis Software version!): re_download_url = "https://s3.amazonaws.com/redis-enterprise-software-downloads/x.x.xx/redislabs-x.x.xx-68-bionic-amd64.tar")
-re_download_url =
-
-#### how many data nodes, 3 minimum, (odd numbers required)
-#### example: data-node-count = 3
-data-node-count = 3
-
-##### redis enterprise software instance type
-##### example: re_instance_type = "t2.xlarge"
-re_instance_type = "t2.xlarge"
-
-##### EBS volume for persistent and ephemeral storage
-#### example: re-volume-size = 150
-re-volume-size = "50"
-
-##### SECURITY
-##### example: allow-public-ssh = 1
-allow-public-ssh = 1
-
-##### explanation...
-##### example: open-nets = ["10.0.0.0/16"]
-open-nets = ["10.0.0.0/16"]
+#### https://developer.redis.com/riot/riot-redis/index.html
+#### put in the latest version of riot redis (ie. "2.18.5")
+riot_version = "2.18.5"
 
 
-############# Create RE Cluster Variables
-
-#### Cluster Inputs
-#### RE Cluster Username
-#### example: re_cluster_username = "admin@admin.com"
-re_cluster_username = "admin@admin.com"
-
-#### RE Cluster Password
-#### example: re_cluster_password = "admin"
-re_cluster_password = "admin"
-
+###### Prometheus variables
+#### Get your RE cluster FQDN, this is required to configure Prometheus and Grafana
+#### example: dns_fqdn = "redis-tf-us-west-2-cluster.redisdemo.com"
+dns_fqdn = 
