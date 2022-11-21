@@ -98,7 +98,7 @@ There are two important files to understand. `modules.tf` and `terraform.tfvars.
     terraform plan
     terraform apply
     # Enter a value: yes
-    # can take around 10 minutes to provision cluster
+    # can take around 5 to 10 minutes to provision
     ```
 
  - example output:
