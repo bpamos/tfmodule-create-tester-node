@@ -1,78 +1,73 @@
-########## Create an RE cluster on AWS from scratch #####
+########## Create a Tester node for your Redis Enterprise Cluster #####
 #### Modules to create the following:
-#### Brand new VPC 
-#### RE nodes and install RE software (ubuntu)
-#### Test node with Redis and Memtier
-#### DNS (NS and A records for RE nodes)
-#### Create and Join RE cluster 
+#### Test node with Redis and Memtier installed
+#### Test node with RIOT installed
+#### Test node with Prometheus and Grafana for advanced monitoring on cluster
+#### (Prometheus and Grafana require the cluster FQDN as an input)
 
 
-########### VPC Module
-#### create a brand new VPC, use its outputs in future modules
-#### If you already have an existing VPC, comment out and
-#### enter your VPC params in the future modules
-module "vpc" {
-    source             = "./modules/vpc"
-    aws_creds          = var.aws_creds
-    owner              = var.owner
-    region             = var.region
-    base_name          = var.base_name
-    vpc_cidr           = var.vpc_cidr
-    subnet_cidr_blocks = var.subnet_cidr_blocks
-    subnet_azs         = var.subnet_azs
-}
-
-### VPC outputs 
-### Outputs from VPC outputs.tf, 
-### must output here to use in future modules)
-output "subnet-ids" {
-  value = module.vpc.subnet-ids
-}
-
-output "vpc-id" {
-  value = module.vpc.vpc-id
-}
-
-output "vpc_name" {
-  description = "get the VPC Name tag"
-  value = module.vpc.vpc-name
-}
-
-########### Node Module
-#### Create RE and Test nodes
-#### Ansible playbooks configure and install RE software on nodes
+########### Test Node Module
+#### Create Test nodes
 #### Ansible playbooks configure Test node with Redis and Memtier
-module "nodes" {
-    source             = "./modules/nodes"
+module "tester-nodes" {
+    source             = "./modules/tester-nodes"
     owner              = var.owner
     region             = var.region
-    vpc_cidr           = var.vpc_cidr
     subnet_azs         = var.subnet_azs
     ssh_key_name       = var.ssh_key_name
     ssh_key_path       = var.ssh_key_path
     test_instance_type = var.test_instance_type
     test-node-count    = var.test-node-count
-    allow-public-ssh   = var.allow-public-ssh
-    open-nets          = var.open-nets
     ### vars pulled from previous modules
-    ## from vpc module outputs 
-    ##(these do not need to be varibles in the variables.tf outside the modules folders
-    ## since they are refrenced from the other module, but they need to be variables 
-    ## in the variables.tf inside the nodes module folder )
-    vpc_name           = module.vpc.vpc-name
-    vpc_subnets_ids    = module.vpc.subnet-ids
-    vpc_id             = module.vpc.vpc-id
+    vpc_name           = var.vpc_name
+    vpc_subnets_ids    = var.vpc_subnets_ids
+    vpc_security_group_ids = var.vpc_security_group_ids
+
 }
 
-# #### Node Outputs to use in future modules
-# output "re-data-node-eips" {
-#   value = module.nodes.re-data-node-eips
-# }
+output "test-node-eips" {
+  value = module.tester-nodes.test-node-eips
+}
 
-# output "re-data-node-internal-ips" {
-#   value = module.nodes.re-data-node-internal-ips
-# }
+########## RIOT Module
+##### install RIOT and required Java packages on node
+module "tester-nodes-riot" {
+    source             = "./modules/tester-nodes-riot"
+    ssh_key_path       = var.ssh_key_path
+    test-node-count    = var.test-node-count
+    riot_version       = var.riot_version
+    vpc_name           = var.vpc_name
 
-# output "re-data-node-eip-public-dns" {
-#   value = module.nodes.re-data-node-eip-public-dns
-# }
+
+    depends_on = [
+      module.tester-nodes
+    ]
+}
+
+########## Prometheus and Grafana Module
+##### install prometheus on new node 
+##### (cavet, Prometheus and Grafana will only work on 1 node, 
+##### if you create more the extra nodes will not have functional Prometheus and Grafana configurations)
+module "tester-nodes-prometheus" {
+    source             = "./modules/tester-nodes-prometheus"
+    ssh_key_path       = var.ssh_key_path
+    vpc_name           = var.vpc_name
+    dns_fqdn           = var.dns_fqdn
+    test-node-eips     = module.tester-nodes.test-node-eips
+
+    #currently breaks sometimes if you try riot & prometheus without the depends on riot here.
+    depends_on = [module.tester-nodes, module.tester-nodes-riot]
+}
+
+#### dns FQDN output used in future modules
+output "grafana_url" {
+  value = module.tester-nodes-prometheus.grafana_url
+}
+
+output "grafana_username" {
+  value = "admin"
+}
+
+output "grafana_password" {
+  value = "secret"
+}

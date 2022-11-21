@@ -1,4 +1,4 @@
-#### Create EC2 Nodes for RE and Test
+#### Create EC2 Nodes for Test Node
 
 # create test node for any potential testing
 resource "aws_instance" "test_node" {
@@ -9,7 +9,7 @@ resource "aws_instance" "test_node" {
   subnet_id                   = element(var.vpc_subnets_ids, count.index)
   instance_type               = var.test_instance_type
   key_name                    = var.ssh_key_name
-  vpc_security_group_ids      = [ aws_security_group.re_sg.id ]
+  vpc_security_group_ids      = var.vpc_security_group_ids
   source_dest_check           = false
 
   tags = {
