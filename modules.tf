@@ -18,7 +18,7 @@ module "tester-nodes" {
     ssh_key_path       = var.ssh_key_path
     test_instance_type = var.test_instance_type
     test-node-count    = var.test-node-count
-    ### vars pulled from previous modules
+    ### vars updated from user RE Cluster VPC
     vpc_name           = var.vpc_name
     vpc_subnets_ids    = var.vpc_subnets_ids
     vpc_security_group_ids = var.vpc_security_group_ids
