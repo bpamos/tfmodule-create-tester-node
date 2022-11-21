@@ -1,5 +1,5 @@
-#### Generating Ansible config, inventory, playbook 
-#### and configuring test nodes and installing Redis and Memtier
+#### Generating Ansible playbook 
+#### and configuring test nodes for RIOT
 
 #### Sleeper, after instance, eip assoc, local file inventories & cfg created
 #### otherwise it can run to fast, not find the inventory file and fail or hang
@@ -18,7 +18,7 @@ resource "local_file" "riot_yaml" {
 }
 
 ######################
-# Run ansible playbook to install redis and memtier
+# Run ansible playbook to install RIOT
 resource "null_resource" "ansible_test_run_riot" {
   count = var.test-node-count
   provisioner "local-exec" {

@@ -4,10 +4,6 @@ variable "ssh_key_path" {
     description = "name of ssh key to be added to instance"
 }
 
-# variable "owner" {
-#     description = "owner tag name"
-# }
-
 #### VPC
 variable "vpc_name" {
   description = "The VPC Project Name tag"

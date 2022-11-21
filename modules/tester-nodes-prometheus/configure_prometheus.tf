@@ -1,8 +1,7 @@
 #### Generating Ansible config, inventory, playbook 
-#### and configuring test nodes and installing Redis and Memtier
+#### and configuring prometheus and grafana for nodes and cluster
 
-#### Sleeper, after instance, eip assoc, local file inventories & cfg created
-#### otherwise it can run to fast, not find the inventory file and fail or hang
+#### Sleeper, sometimes everything needs to initialize
 resource "time_sleep" "wait_30_seconds_prometheus" {
   create_duration = "30s"
   depends_on = [local_file.prometheus, 
@@ -75,7 +74,7 @@ resource "null_resource" "ansible_run_grafana_datasource" {
 ###################### 
 ###################### Grafana Dashboard Config
 
-#### save json files to tmp folder so I can access them
+#### save json files to tmp folder so ansible can easily access them
 resource "local_file" "save_grafana_cluster_to_tmp" {
     content  = templatefile("${path.module}/ansible/grafana/cluster.json", {
         #vpc_name = var.vpc_name

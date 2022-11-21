@@ -16,15 +16,6 @@ variable "owner" {
     description = "owner tag name"
 }
 
-# #### VPC
-# variable "vpc_cidr" {
-#     description = "vpc-cidr"
-# }
-
-# variable "vpc_id" {
-#   description = "The ID of the VPC"
-# }
-
 variable "vpc_name" {
   description = "The VPC Project Name tag"
 }
