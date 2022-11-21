@@ -1,9 +1,11 @@
 # tfmodule-create-tester-node
-Terraform modules to create a tester node for Redis Enterprise Cluster
+Terraform modules to create a tester node for Redis Enterprise Cluster.
+
 Assuming user already has an up and running cluster deployed in an AWS VPC.
+
 The user can take this current subnet azs, subnet ids, and security group id, input them as variables and deploy a test node.
 
-Test Node Options:
+**Test Node Options:**
 * Create Tester node with Redis OSS and Memtier Benchmark installed.
 * Optional:
     - Configure and install RIOT on Tester Node
