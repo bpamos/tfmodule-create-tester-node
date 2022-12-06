@@ -8,7 +8,7 @@ import mysql.connector
 cnx = mysql.connector.connect(
                                 user='admin', 
                                 password='password',
-                                host='52.42.186.119',
+                                host='44.229.176.207',
                                 database='classicmodels'
                                 )
 
@@ -18,42 +18,53 @@ cursor = cnx.cursor()
 
 import random
 
-# define the query with placeholders for the dynamic values
-query = """
-SELECT 
-    customername, 
-    country, 
-    state, 
-    creditlimit
-FROM
-    customers
-WHERE
-    country = 'USA' AND 
-    state = 'CA' AND 
-    creditlimit > {};
-"""
+# # define the query with placeholders for the dynamic values
+# query = """
+# SELECT 
+#     customername, 
+#     country, 
+#     state, 
+#     creditlimit
+# FROM
+#     customers
+# WHERE
+#     country = 'USA' AND 
+#     state = 'CA' AND 
+#     creditlimit > {};
+# """
 
-# loop 10 times
-for i in range(1000):
-    # generate a random integer for the creditlimit value
-    creditlimit = random.randint(1000, 500000)
+# # loop 10 times
+# for i in range(1000):
+#     # generate a random integer for the creditlimit value
+#     creditlimit = random.randint(1000, 500000)
 
-    # format the query with the dynamic values
-    formatted_query = query.format(creditlimit)
-    print(formatted_query)
-    # execute the query
-    cursor.execute(formatted_query)
+#     # format the query with the dynamic values
+#     formatted_query = query.format(creditlimit)
+#     print(formatted_query)
+#     # execute the query
+#     cursor.execute(formatted_query)
 
-    # get the results
-    results = cursor.fetchall()
+#     # get the results
+#     results = cursor.fetchall()
 
-    # print the results
-    # for result in results:
-    #     print(result)
+#     # print the results
+#     # for result in results:
+#     #     print(result)
 
-# close the cursor and connection
-cursor.close()
-cnx.close()
+# # close the cursor and connection
+# #cursor.close()
+# #cnx.close()
+
+
+
+
+
+
+
+
+
+
+################
 
 
 query = """

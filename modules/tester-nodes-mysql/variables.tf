@@ -22,3 +22,13 @@ variable "test-node-eips" {
   description = "test-node-eips"
   default     = ""
 }
+
+variable "redis-db-endpoint" {
+  description = "redis-db-endpoint"
+  default     = "localhost"
+}
+
+variable "redis-db-port" {
+  description = "redis-db-endpoint"
+  default     = 6379
+}

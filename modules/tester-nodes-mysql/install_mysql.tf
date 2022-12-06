@@ -29,7 +29,7 @@ resource "null_resource" "ansible_test_mysql" {
 
 
 #Run ansible-playbook to create crdb from python script (REST API)
-resource "null_resource" "load_mysql_data5" {
+resource "null_resource" "load_mysql_data" {
   provisioner "local-exec" {
     command = "python3 ${path.module}/python/load_data.py"
     }
@@ -46,13 +46,15 @@ resource "null_resource" "load_mysql_data5" {
 resource "local_file" "query_py" {
     content  = templatefile("${path.module}/python/query_data.py.tpl", {
         test_node_host_ip = var.test-node-eips[0]
+        redis-db-endpoint = var.redis-db-endpoint
+        redis-db-port     = var.redis-db-port 
     })
     filename = "${path.module}/python/query_data.py"
   depends_on = [time_sleep.wait_30_seconds_test]
 }
 
 #Run ansible-playbook to create crdb from python script (REST API)
-resource "null_resource" "query_data1" {
+resource "null_resource" "query_data2" {
   provisioner "local-exec" {
     command = "python3 ${path.module}/python/query_data.py"
     }
@@ -60,6 +62,6 @@ resource "null_resource" "query_data1" {
     depends_on = [
       local_file.load_data_py,
       null_resource.ansible_test_mysql,
-      null_resource.load_mysql_data5
+      null_resource.load_mysql_data
     ]
 }

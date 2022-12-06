@@ -29,11 +29,6 @@ output "test-node-eips" {
   value = module.tester-nodes.test-node-eips
 }
 
-# output "test-node-public_dns" {
-#   value = module.tester-nodes.public_dns
-# }
-
-
 ########## MYSQL Install
 ##### install MySQL on Node
 module "tester-nodes-mysql" {
@@ -42,6 +37,8 @@ module "tester-nodes-mysql" {
     test-node-count    = var.test-node-count
     test-node-eips     = module.tester-nodes.test-node-eips
     vpc_name           = var.vpc_name
+    redis-db-endpoint  = var.redis-db-endpoint
+    redis-db-port      = var.redis-db-port
 
 
     depends_on = [
