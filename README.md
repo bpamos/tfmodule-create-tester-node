@@ -91,6 +91,12 @@ There are two important files to understand. `modules.tf` and `terraform.tfvars.
 4. Now you are ready to go!
     * Open a terminal in VS Code:
     ```bash
+    # create virtual environment
+    python3 -m venv ./venv
+    # upgrade pip
+    python3 -m pip install --upgrade pip
+    # install requirements.txt file
+    pip3 install -r requirements.txt
     # ensure ansible is in path
     ansible --version
     # run terraform commands
